@@ -19,7 +19,7 @@ import com.tienda.models.dao.IUsuarioDao;
 import com.tienda.models.entity.Usuario;
 
 @Service
-public class UsuarioService implements UserDetailsService{
+public class UsuarioService implements IUsuarioService ,UserDetailsService{
 	
 	private Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 	
@@ -42,6 +42,12 @@ public class UsuarioService implements UserDetailsService{
 				.peek(authority -> logger.info("Role: "+ authority.getAuthority()))
 				.collect(Collectors.toList());
 		return new User(usuario.getUsername(), usuario.getPassword(), usuario.getEnabled(), true, true, true, authorities);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Usuario findByUsername(String username) {
+		return usuarioDao.findByUsername(username);
 	}
 
 }
